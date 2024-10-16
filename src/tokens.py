@@ -1,4 +1,4 @@
-keywords = ["load", "classify", "train", "foreach", "save", "file", "process_email", "predict", "read_file", "split"]
+keywords = ["load", "classify", "train", "foreach", "save", "file", "process_email", "predict", "read_file", "split", "in"]
 operators = [":=", "+", "-", "*", "/", "==", "!=", "<", ">", "<=", ">="]
 symbols = ["{", "}", "(", ")", "[", "]", ","]
 
