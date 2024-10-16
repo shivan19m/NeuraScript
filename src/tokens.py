@@ -1,9 +1,9 @@
-keywords = ["load", "classify", "train", "foreach", "data"]
+keywords = ["load", "classify", "train", "foreach", "save", "file", "process_email", "predict", "read_file", "split"]
 operators = [":=", "+", "-", "*", "/", "==", "!=", "<", ">", "<=", ">="]
-symbols = ["{", "}", "(", ")"]
+symbols = ["{", "}", "(", ")", "[", "]", ","]
 
 def is_keyword(token):
-    return token in keywords
+    return token.lower() in keywords  # Case-insensitive keyword matching
 
 def is_identifier(token):
     return token[0].isalpha() or token[0] == '_'

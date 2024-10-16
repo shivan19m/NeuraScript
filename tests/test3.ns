@@ -1,2 +1,11 @@
-// Incorrect string declaration
-data file := "file.txt
+// Load model for classification
+load model := "classificationModel"
+file email := "email1.txt"
+content := read_file(email)
+
+// Split email content
+words := split(content, by " ")
+
+// Classify email
+prediction := classify(content, using model)
+output prediction
