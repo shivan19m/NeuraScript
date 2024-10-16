@@ -1,0 +1,7 @@
+// Load model and classify input
+load model := "classificationModel"
+data input := ["email1.txt", "email2.txt"]
+foreach item in input {
+    prediction := classify(item, using model)
+    output prediction
+}
