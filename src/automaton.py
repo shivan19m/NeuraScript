@@ -10,13 +10,11 @@ def process_token(token, current_state):
     elif is_operator(token):
         print(f"<OPERATOR, {token}>")
         return 1
-    
-    literal_boolean, new_token = is_literal(token)
-    if literal_boolean:
-        print(f"<LITERAL, {new_token}>")
-        return 1
     elif is_symbol(token):
         print(f"<SYMBOL, {token}>")
+        return 1
+    elif is_literal(token):
+        print(f"<LITERAL, {token}>")
         return 1
     else:
         print(f"Error: Unrecognized token '{token}'")

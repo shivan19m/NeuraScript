@@ -15,20 +15,10 @@ def is_literal(token):
     is_literal = False
     if((token.startswith("'") and token.endswith("'") or (token.startswith('"') and token.endswith('"')))):
         is_literal = True
+        return token
     if token.isdigit():
         is_literal = True
-    elif token.startswith('['):
-        is_literal = True
-        token = token[1:].strip()  
-        if token.endswith(','):
-            token = token[:-1].strip() 
-    elif token.endswith(']'):
-        is_literal = True
-        token = token[:-1].strip() 
-    elif token.endswith(','):
-        is_literal = True
-        token = token[:-1].strip()
-    return is_literal, token 
+        return token 
 
 def is_symbol(token):
     return token in symbols
