@@ -18,19 +18,16 @@ def is_literal(token):
     if token.isdigit():
         is_literal = True
     elif token.startswith('['):
-        # Handle the case where the token starts with an open bracket
         is_literal = True
-        token = token[1:].strip()  # Remove the opening bracket and strip whitespace
+        token = token[1:].strip()  
         if token.endswith(','):
-            token = token[:-1].strip()  # Remove the trailing comma and strip whitespace
+            token = token[:-1].strip() 
     elif token.endswith(']'):
-        # Handle the case where the token ends with a close bracket
         is_literal = True
-        token = token[:-1].strip()  # Remove the closing bracket and strip whitespace
+        token = token[:-1].strip() 
     elif token.endswith(','):
-        # Handle the case where the token ends with a comma
         is_literal = True
-        token = token[:-1].strip()  # Remove the trailing comma and strip whitespace
+        token = token[:-1].strip()
     return is_literal, token 
 
 def is_symbol(token):

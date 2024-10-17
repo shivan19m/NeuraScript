@@ -1,4 +1,7 @@
-NeuraScript Scanner
+NeuraScript Scanner: 
+
+Shivan Mukherjee: sm5155 
+Gurnoor Virdi: gsv2110
 
 Introduction
 NeuraScript is a language designed to simplify the integration of machine learning models into applications. The purpose of this project is to create a scanner (lexical analyzer) for NeuraScript that tokenizes source code, adhering to the finite state automata rules discussed in class, while supporting NeuraScript's constructs and Python's syntax. NeuraScript acts as a wrapper over Python, so the scanner is built to process both NeuraScript and standard Python code.
@@ -76,7 +79,3 @@ FSM for Recognizing load
     (S2) edge node {a} (S3)
     (S3) edge node {d} (S4);
 \end{tikzpicture}
-
-Authors
-- Shivan 
-- Gurnoor 
