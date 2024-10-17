@@ -1,2 +1,2 @@
 # requirements.txt
-matplotlib==3.4.2
+matplotlib==3.5.3

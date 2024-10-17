@@ -3,9 +3,9 @@ load model := "classificationModel"
 file email := "email1.txt"
 content := read_file(email)
 
-// Split email content
+# Split email content
 words := split(content, by " ")
 
-// Classify email
+# Classify email
 prediction := classify(content, using model)
 output prediction
