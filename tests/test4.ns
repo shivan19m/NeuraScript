@@ -1,2 +1,5 @@
-// Invalid identifier
-123model := "classificationModel"
+// Nested loops and function calls
+data numbers := [1, 2, 3, 4, 5]
+foreach num in numbers:
+    squared := power(num, 2)
+    output squared

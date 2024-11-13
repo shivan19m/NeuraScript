@@ -55,12 +55,8 @@ class Parser:
         return StatementListNode(statements)
 
     def parse_statement(self):
-        if self.current_token.type == "KEYWORD":
-            if self.current_token.value == "load":
-                return self.parse_declaration()
-            elif self.current_token.value == "data":
-                return self.parse_declaration()
-            elif self.current_token.value == "file":
+        if self.current_token.type in ("KEYWORD", "IDENTIFIER"):
+            if self.current_token.value in ["load", "data", "file"]:
                 return self.parse_declaration()
             elif self.current_token.value == "foreach":
                 return self.parse_loop()
@@ -68,15 +64,13 @@ class Parser:
                 return self.parse_output_statement()
             else:
                 return self.parse_assignment_or_function_call()
-        elif self.current_token.type == "IDENTIFIER":
-            return self.parse_assignment_or_function_call()
         else:
             self.error(f"Unexpected token {self.current_token.value}")
 
     def parse_declaration(self):
         if self.current_token.value == "load":
             self.match("KEYWORD", "load")
-            self.match("IDENTIFIER", "model")  # Changed to IDENTIFIER
+            self.match("IDENTIFIER", "model")
             assign_op = self.parse_assign_op()
             expr = self.parse_expression()
             return DeclarationNode("model", assign_op, expr)
@@ -86,9 +80,14 @@ class Parser:
             assign_op = self.parse_assign_op()
             expr = self.parse_expression()
             return DeclarationNode(identifier.value, assign_op, expr)
+        elif self.current_token.value == "file":
+            self.match("KEYWORD", "file")
+            identifier = self.match("IDENTIFIER")
+            assign_op = self.parse_assign_op()
+            expr = self.parse_expression()
+            return DeclarationNode(identifier.value, assign_op, expr)
         else:
             self.error(f"Unexpected keyword {self.current_token.value} in declaration")
-
 
     def parse_assign_op(self):
         if self.current_token.type == "OPERATOR" and self.current_token.value == ":=":
@@ -101,13 +100,23 @@ class Parser:
             self.error(f"Expected assignment operator ':=' or ':', got {self.current_token.value}")
 
     def parse_assignment_or_function_call(self):
-        identifier = self.match("IDENTIFIER")
-        if self.current_token and self.current_token.type == "OPERATOR" and self.current_token.value == ":=":
-            self.match("OPERATOR", ":=")
-            expr = self.parse_expression()
-            return AssignmentNode(identifier.value, expr)
+        if self.current_token.type in ("IDENTIFIER", "KEYWORD"):
+            identifier = self.match(self.current_token.type)
+            if self.current_token and self.current_token.type == "OPERATOR" and self.current_token.value == ":=":
+                self.match("OPERATOR", ":=")
+                expr = self.parse_expression()
+                return AssignmentNode(identifier.value, expr)
+            elif self.current_token and self.current_token.type == "SYMBOL" and self.current_token.value == "(":
+                func_call = self.parse_function_call(identifier.value)
+                if self.current_token and self.current_token.type == "KEYWORD" and self.current_token.value == "using":
+                    self.match("KEYWORD", "using")
+                    model = self.match("IDENTIFIER")
+                    return UsingNode(func_call, model.value)
+                return func_call
+            else:
+                self.error(f"Expected ':=' for assignment or '(' for function call")
         else:
-            self.error(f"Expected ':=' for assignment")
+            self.error(f"Expected IDENTIFIER or KEYWORD, got {self.current_token.value}")
 
     def parse_loop(self):
         self.match("KEYWORD", "foreach")
@@ -143,39 +152,50 @@ class Parser:
     def parse_argument_list(self):
         args = []
         if self.current_token.type != "SYMBOL" or self.current_token.value != ")":
-            expr = self.parse_expression()
-            args.append(expr)
-            while self.current_token.type == "SYMBOL" and self.current_token.value == ",":
-                self.match("SYMBOL", ",")
-                expr = self.parse_expression()
-                args.append(expr)
+            while True:
+                arg = self.parse_expression()
+                # Check for keyword argument
+                if self.current_token and self.current_token.type == "OPERATOR" and self.current_token.value == "=":
+                    self.match("OPERATOR", "=")
+                    value = self.parse_expression()
+                    arg = KeywordArgumentNode(arg.name, value)
+                args.append(arg)
+                if self.current_token.type == "SYMBOL" and self.current_token.value == ",":
+                    self.match("SYMBOL", ",")
+                else:
+                    break
         return args
 
     def parse_expression(self):
-        if self.current_token.type == "KEYWORD" and self.current_token.value in ["classify", "train"]:
-            func_name = self.current_token.value
-            self.next_token()
-            func_call = self.parse_function_call(func_name)
-            if self.current_token and self.current_token.type == "KEYWORD" and self.current_token.value == "using":
-                self.match("KEYWORD", "using")
-                model = self.match("IDENTIFIER")  # Now matches IDENTIFIER
-                return UsingNode(func_call, model.value)
-            return func_call
+        term = self.parse_term()
+        if self.current_token and self.current_token.type == "KEYWORD" and self.current_token.value == "using":
+            self.match("KEYWORD", "using")
+            model = self.match("IDENTIFIER")
+            return UsingNode(term, model.value)
         else:
-            return self.parse_term()
+            return term
 
     def parse_term(self):
-        if self.current_token.type in ("LITERAL", "STRINGLITERAL"):
+        if self.current_token.type in ("LITERAL", "STRINGLITERAL", "NUMBER"):
             token = self.current_token
             self.next_token()
             return LiteralNode(token.value)
-        elif self.current_token.type == "IDENTIFIER":
-            identifier = self.match("IDENTIFIER")
+        elif self.current_token.type in ("IDENTIFIER", "KEYWORD"):
+            token = self.match(self.current_token.type)
             if self.current_token and self.current_token.type == "SYMBOL" and self.current_token.value == "(":
-                return self.parse_function_call(identifier.value)
-            return IdentifierNode(identifier.value)
-        elif self.current_token.type == "SYMBOL" and self.current_token.value == "[":
-            return self.parse_list_literal()
+                return self.parse_function_call(token.value)
+            else:
+                return IdentifierNode(token.value)
+        elif self.current_token.type == "SYMBOL":
+            if self.current_token.value == "[":
+                return self.parse_list_literal()
+            elif self.current_token.value == "(":
+                self.match("SYMBOL", "(")
+                expr = self.parse_expression()
+                self.match("SYMBOL", ")")
+                return expr
+            else:
+                self.error(f"Unexpected symbol {self.current_token.value}")
         else:
             self.error(f"Unexpected token {self.current_token.value}")
 
@@ -183,10 +203,12 @@ class Parser:
         self.match("SYMBOL", "[")
         elements = []
         if self.current_token.type != "SYMBOL" or self.current_token.value != "]":
-            elements.append(self.parse_expression())
-            while self.current_token.type == "SYMBOL" and self.current_token.value == ",":
-                self.match("SYMBOL", ",")
+            while True:
                 elements.append(self.parse_expression())
+                if self.current_token.type == "SYMBOL" and self.current_token.value == ",":
+                    self.match("SYMBOL", ",")
+                else:
+                    break
         self.match("SYMBOL", "]")
         return ListLiteralNode(elements)
 
@@ -213,6 +235,9 @@ def print_ast(node, indent=""):
         print(f"{indent}FunctionCall: {node.func_name}")
         for arg in node.args:
             print_ast(arg, indent + "  ")
+    elif isinstance(node, KeywordArgumentNode):
+        print(f"{indent}KeywordArgument: {node.name} =")
+        print_ast(node.value, indent + "  ")
     elif isinstance(node, UsingNode):
         print(f"{indent}Using model")
         print(f"{indent}  Function Call:")

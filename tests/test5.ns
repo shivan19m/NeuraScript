@@ -1,2 +1,6 @@
-// Symbols example
-{ load data (dataset) }
+// Multiple arguments and variables
+load model := "regressionModel"
+data x_values := [1, 2, 3, 4]
+data y_values := [2, 4, 6, 8]
+results := train(model, x_values, y_values)
+output results

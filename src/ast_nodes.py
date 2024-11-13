@@ -68,3 +68,8 @@ class IdentifierNode(Node):
 class ListLiteralNode(Node):
     def __init__(self, elements):
         self.elements = elements
+        
+class KeywordArgumentNode:
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
