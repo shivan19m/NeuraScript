@@ -79,8 +79,8 @@ run_scanner() {
     done
 }
 
-run_scanner_and_parser() {
-    echo "Running the NeuraScript scanner and parser on all test files..."
+run_parser() {
+    echo "Running the NeuraScript parser on all test files..."
     if [ -d "tests" ]; then
         echo "Listing contents of tests directory:"
         ls tests
@@ -95,20 +95,13 @@ run_scanner_and_parser() {
             exit 1
         fi
 
-        echo -e "\n\n\nProcessing $test_file..."
-        output=$(python3 src/scanner.py "$test_file")
-        echo "$output"
-        echo
-        echo
-
-        echo -e "\n\n\nProcessing tokens with Parser..."
-        parser_output=$(python3 src/parser.py tokens.txt)
+        echo -e "\n\n\nProcessing $test_file with Parser..."
+        parser_output=$(python3 src/parser.py "$test_file")
         echo "$parser_output"
         echo
         echo
     done
 }
-
 
 if [ "$1" == "--docker" ]; then
     echo "Using Docker to run the scanner..."
@@ -120,4 +113,5 @@ else
     setup_virtualenv
     install_dependencies
     run_scanner
+    run_parser
 fi

@@ -16,78 +16,145 @@ NeuraScript is a language designed to simplify the integration of machine learni
 Below, I have outlined the context-free grammar (CFG) for NeuraScript. 
 
 
-#### Terminals
+#### Terminal Symbols
+- **Keywords**: `load`, `classify`, `train`, `foreach`, `save`, `file`, `process_email`, `predict`, `read_file`, `split`, `in`, `output`, `data`, `using`, `by`
+- **Operators**: `:=`, `+`, `-`, `*`, `/`, `==`, `!=`, `<`, `>`, `<=`, `>=`, `=`
+- **Symbols**: `{`, `}`, `(`, `)`, `[`, `]`, `,`, `:`, `.`
+- **Identifiers**: Represented by sequences of letters, digits, or underscores starting with a letter or underscore.
+- **String Literals**: Represented as `"some text"` (strings enclosed in double quotes).
+- **Numbers**: Represented by integers or decimal values.
 
-- **Keywords**: `load`, `classify`, `train`, `foreach`, `save`, `file`, `process_email`, `predict`, `read_file`, `split`, `in`, `model`, `data`, `output`
-- **Operators**: `:=`, `+`, `-`, `*`, `/`, `==`, `!=`, `<`, `>`, `<=`, `>=`
-- **Symbols**: `{`, `}`, `(`, `)`, `[`, `]`, `,`, `:`
-- **Identifiers**: Variable names that start with a letter or underscore, followed by letters, numbers, or underscores. We have followed the variable naming convention from Python. 
-- **Literals**: String literals enclosed in quotes (`""` or `''`) and numbers. 
+#### Non-Terminal Symbols
+1. **`<Program>`**: The entire script or file content.
+2. **`<Statement>`**: A single line of code that may be a declaration, assignment, function call, or loop.
+3. **`<Declaration>`**: A command for declaring or loading models, files, or data.
+4. **`<Expression>`**: Expressions, which can include identifiers, function calls, or operations.
+5. **`<Loop>`**: Control flow structure to repeat actions over an iterable.
 
-#### Non-Terminals
+#### Production Rules
 
-1. **Program**: The root non-terminal representing the entire NeuraScript source code.
-2. **Statement**: Represents a valid command or operation.
-3. **LoadStatement**: Represents loading a model.
-4. **DataStatement**: Represents defining datasets.
-5. **ForeachStatement**: Represents iteration over data.
-6. **AssignmentStatement**: Represents assigning values to variables.
-7. **Expression**: Represents identifiers, literals, or function calls.
+1. **Program**  
+   ```plaintext
+   <Program> ::= <StatementList>
+   ```
 
-### Production Rules
+2. **Statement List**
+   ```plaintext
+   <StatementList> ::= <Statement> NEWLINE <StatementList>
+                     | <Statement> NEWLINE
+   ```
 
-1. **Program**:
+3. **Statement**
+   ```plaintext
+   <Statement> ::= <Declaration>
+                 | <Assignment>
+                 | <FunctionCall>
+                 | <Loop>
+                 | <OutputStatement>
+   ```
 
-   - `Program -> Statement*`
-   - A program is composed of zero or more statements.
+4. **Declaration**
+   ```plaintext
+   <Declaration> ::= "load" IDENTIFIER <AssignOp> <Expression>
+                   | "data" IDENTIFIER <AssignOp> <Expression>
+                   | "file" IDENTIFIER <AssignOp> <Expression>
+   ```
 
-2. **Statement**:
+5. **Assignment**
+   ```plaintext
+   <Assignment> ::= IDENTIFIER <AssignOp> <Expression>
+   ```
 
-   - `Statement -> LoadStatement`
-   - `Statement -> DataStatement`
-   - `Statement -> ForeachStatement`
-   - `Statement -> AssignmentStatement`
-   - `Statement -> OutputStatement`
+6. **Function Call**
+   ```plaintext
+   <FunctionCall> ::= IDENTIFIER "(" <ArgumentList> ")" ["using" IDENTIFIER]
+   ```
 
-3. **LoadStatement**:
+7. **Loop**
+   ```plaintext
+   <Loop> ::= "foreach" IDENTIFIER "in" IDENTIFIER ":" INDENT <StatementList> DEDENT
+   ```
 
-   - `LoadStatement -> 'load' 'model' ':' STRING_LITERAL`
+8. **Output Statement**
+   ```plaintext
+   <OutputStatement> ::= "output" <Expression>
+   ```
 
-4. **DataStatement**:
+9. **AssignOp**
+   ```plaintext
+   <AssignOp> ::= ":="
+   ```
 
-   - `DataStatement -> 'data' IDENTIFIER ':' ArrayLiteral`
+10. **Argument List**
+    ```plaintext
+    <ArgumentList> ::= <Expression> "," <ArgumentList>
+                     | <KeywordArgument>
+                     | <Expression>
+                     | ε
+    ```
 
-5. **ArrayLiteral**:
+11. **Keyword Argument**
+    ```plaintext
+    <KeywordArgument> ::= IDENTIFIER "=" <Expression>
+    ```
 
-   - `ArrayLiteral -> '[' LiteralList ']'`
-   - `LiteralList -> STRING_LITERAL (',' STRING_LITERAL)*`
+12. **Expression**
+    ```plaintext
+    <Expression> ::= <Term> "using" IDENTIFIER
+                   | <Term>
+    ```
 
-6. **ForeachStatement**:
+13. **Term**
+    ```plaintext
+    <Term> ::= STRINGLITERAL
+             | NUMBER
+             | IDENTIFIER
+             | <FunctionCall>
+             | <ListLiteral>
+    ```
 
-   - `ForeachStatement -> 'foreach' IDENTIFIER 'in' IDENTIFIER '{' Statement* '}'`
+14. **List Literal**
+    ```plaintext
+    <ListLiteral> ::= "[" <LiteralList> "]"
+    ```
 
-7. **AssignmentStatement**:
+15. **Literal List**
+    ```plaintext
+    <LiteralList> ::= <Literal> "," <LiteralList>
+                    | <Literal>
+                    | ε
+    ```
 
-   - `AssignmentStatement -> IDENTIFIER ':' Expression`
+16. **Literal**
+    ```plaintext
+    <Literal> ::= NUMBER
+                | STRINGLITERAL
+    ```
 
-8. **OutputStatement**:
+---
 
-   - `OutputStatement -> 'output' Expression`
+### Example Parse Tree Representations
 
-9. **Expression**:
+1. **Example for ListLiteral**:
+   ```plaintext
+   ListLiteral
+      Literal: 1
+      Literal: 2
+      Literal: 3
+      Literal: 4
+   ```
 
-   - `Expression -> IDENTIFIER`
-   - `Expression -> STRING_LITERAL`
-   - `Expression -> FunctionCall`
+2. **Example for Using Model**:
+   ```plaintext
+   Using model
+      Function Call:
+        FunctionCall: classify
+          Identifier: item
+      Model: model
+   ```
+   ----
 
-10. **FunctionCall**:
-
-    - `FunctionCall -> IDENTIFIER '(' ArgumentList ')'`
-
-11. **ArgumentList**:
-
-    - `ArgumentList -> (Expression (',' Expression)*)?`
-
+This grammar specification defines the NeuraScript language, including declarations, assignments, loops, output statements, and function calls. The parser will follow these rules to generate an Abstract Syntax Tree (AST) for each script.
 ### Example Program
 
 Below is an example NeuraScript program and its corresponding parse structure according to the grammar:
@@ -115,7 +182,202 @@ foreach item in input {
 This CFG provides a detailed description of the syntactic structure of the NeuraScript language, defining both terminals (keywords, symbols, etc.) and non-terminals (such as statements and expressions). The grammar facilitates the creation of a parser that can correctly parse NeuraScript code, enabling seamless integration of machine learning components into applications.
 
 
+### Part 2: Develop a parsing algorithm
 
+The Parsing code we have developed is in parser.py , and ast_nodes.py . 
+The code is shown with commetns and the video link below explains in detail how our code works. 
+
+
+### Part 3: Input Programs: 
+
+We have detailed the five sample input programs located in the tests directory and described their expected Abstract Syntax Tree (AST) outputs. 
+Each program is stored in its respective `.ns` file and is processed by the parser to yield the expected AST. These outputs serve as a reference for testing and validating the parser’s functionality.
+
+
+##### **Test 1: Basic Model Loading and Classification**
+**File**: `tests/test1.ns`
+
+
+**Expected AST Outpu for test1.ns t**:
+```plaintext
+Program
+  Declaration: model :=
+    Literal: "classificationModel"
+  Declaration: input :=
+    ListLiteral
+      Literal: "email1.txt"
+      Literal: "email2.txt"
+  Loop: foreach item in input
+    Block
+      Assignment: prediction :=
+        Using model
+          Function Call:
+            FunctionCall: classify
+              Identifier: item
+          Model: model
+      Output
+        Identifier: prediction
+```
+
+**Explanation**:  
+This test demonstrates:
+- Model loading and data declaration
+- Use of a `foreach` loop
+- Nested `Using` model structure within a function call
+- Output of classification predictions
+
+---
+
+##### **Test 2: Model Training with `Using` Clause**
+**File**: `tests/test2.ns`
+
+**Expected AST Outputfor test 2.ns **:
+```plaintext
+Program
+  Declaration: model :=
+    Literal: "newModel"
+  Using model
+    Function Call:
+      FunctionCall: train
+        Identifier: model
+    Model: dataset
+```
+
+**Explanation**:  
+This test focuses on:
+- A simple `load` statement for model declaration
+- A `train` function with a `using` clause, showing the parser's ability to process model application during training
+- Error-free parsing of `Using` clauses and identifiers
+
+---
+
+##### **Test 3: File Handling and String Splitting**
+**File**: `tests/test3.ns`
+
+**Expected AST Output for test3.ns**:
+```plaintext
+Program
+  Declaration: model :=
+    Literal: "classificationModel"
+  Declaration: email :=
+    Literal: "email1.txt"
+  Assignment: content :=
+    FunctionCall: read_file
+      Identifier: email
+  Assignment: words :=
+    FunctionCall: split
+      Identifier: content
+      KeywordArgument: by =
+        Literal: " "
+  Assignment: prediction :=
+    Using model
+      Function Call:
+        FunctionCall: classify
+          Identifier: content
+      Model: model
+  Output
+    Identifier: prediction
+```
+
+**Explanation**:  
+This example tests:
+- File handling with `read_file`
+- Function calls with keyword arguments (e.g., `split(content, by=" ")`)
+- Nested expressions and outputting of classification results
+
+---
+
+##### **Test 4: Nested Loops and Arithmetic**
+**File**: `tests/test4.ns`
+
+**Expected AST Output for test4.ns**:
+```plaintext
+Program
+  Declaration: numbers :=
+    ListLiteral
+      Literal: 1
+      Literal: 2
+      Literal: 3
+      Literal: 4
+      Literal: 5
+  Loop: foreach num in numbers
+    Block
+      Assignment: squared :=
+        FunctionCall: power
+          Identifier: num
+          Literal: 2
+      Output
+        Identifier: squared
+```
+
+**Explanation**:  
+This test demonstrates:
+- A `foreach` loop with arithmetic operations in nested function calls
+- Parsing and representation of lists and list literals
+- Handling of function calls with literal arguments within loops
+
+---
+
+##### **Test 5: Multiple Arguments and Complex Assignments**
+**File**: `tests/test5.ns`
+
+
+**Expected AST Output for test5.ns**:
+```plaintext
+Program
+  Declaration: model :=
+    Literal: "regressionModel"
+  Declaration: x_values :=
+    ListLiteral
+      Literal: 1
+      Literal: 2
+      Literal: 3
+      Literal: 4
+  Declaration: y_values :=
+    ListLiteral
+      Literal: 2
+      Literal: 4
+      Literal: 6
+      Literal: 8
+  Assignment: results :=
+    FunctionCall: train
+      Identifier: model
+      Identifier: x_values
+      Identifier: y_values
+  Output
+    Identifier: results
+```
+
+**Explanation**:  
+This test showcases:
+- Handling of multiple arguments in function calls
+- Parsing of lists with multiple literals for data storage
+- Assignment and output of model results
+
+---
+
+### Error Handling Test
+
+To validate the parser’s error handling, consider the following scenario where an invalid operator is used:
+
+**Sample Input**:
+```plaintext
+load model := "classificationModel"
+data input == ["email1.txt", "email2.txt"]
+output prediction
+```
+
+**Expected Error**:
+```plaintext
+Syntax error on line 2: Expected ':=' or ':', got '=='
+```
+
+**Explanation**:  
+This input uses `==` instead of `:=` or `:` for the `data` declaration, triggering a syntax error and demonstrating the parser's error-handling capability.
+
+---
+
+These test cases collectively cover a broad range of syntax and structural elements in NeuraScript, ensuring the parser’s functionality and robustness. Each `.ns` file provides a clear, specific case for testing the parser’s handling of declarations, assignments, function calls, control structures, and error handling.
 Deliverables for Homework 1
 
 1. Lexical Grammar
@@ -221,7 +483,6 @@ Docker run commands:
 docker build -t neuroscript-toolchain .
 
 docker run neuroscript-toolchain
-
 
 without docker: 
 ./run_scanner.sh test1.ns
