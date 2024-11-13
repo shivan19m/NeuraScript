@@ -7,7 +7,7 @@ Deliverables
 
 1. Lexical Grammar
 The lexical grammar defines five token types: KEYWORD, IDENTIFIER, OPERATOR, LITERAL, and SYMBOL. These token types are identified by custom finite automata implemented in src/tokens.py.
-
+https://code.visualstudio.com/docs/languages/markdown
 NeuraScript-specific tokens:
 - KEYWORDS: load, train, classify, foreach, save, file, process_email, etc.
 - OPERATORS: :=, +, -, *, /, ==, etc.

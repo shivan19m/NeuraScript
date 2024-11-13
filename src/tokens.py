@@ -1,18 +1,19 @@
-keywords = ["load", "classify", "train", "foreach", "save", "file", "process_email", "predict", "read_file", "split", "in"]
-operators = [":=", "+", "-", "*", "/", "==", "!=", "<", ">", "<=", ">="]
-symbols = ["{", "}", "(", ")", "[", "]", ","]
+# tokens.py
 
-def is_keyword(token):
-    return token.lower() in keywords  # Case-insensitive keyword matching
+class Token:
+    def __init__(self, type, value, line_num=None):
+        self.type = type
+        self.value = value
+        self.line_num = line_num
 
-def is_identifier(token):
-    return token[0].isalpha() or token[0] == '_'
+    def __repr__(self):
+        return f"<{self.type}, {self.value}>"
 
-def is_operator(token):
-    return token in operators
+keywords = [
+    "load", "classify", "train", "foreach", "save", "file", "process_email",
+    "predict", "read_file", "split", "in", "output", "data", "using", "by"
+]
 
-def is_literal(token):
-    return token.isdigit()
+operators = [":=", "+", "-", "*", "/", "==", "!=", "<", ">", "<=", ">=", "="]
 
-def is_symbol(token):
-    return token in symbols
+symbols = ["{", "}", "(", ")", "[", "]", ",", ":", "."]

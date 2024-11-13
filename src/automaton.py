@@ -1,31 +1,27 @@
-from tokens import is_keyword, is_identifier, is_operator, is_literal, is_symbol
+# automaton.py
 
-def process_token(token, current_state):
+from tokens import is_keyword, is_identifier, is_operator, is_literal, is_symbol, Token
+
+def process_token(token, current_state, line_num):
     # Ignore comments
     if token.startswith("//"):
         return -2  # Special state to skip the rest of the line
-    
+
     # Handle string literals
     if token.startswith('"') and token.endswith('"'):
-        print(f"<STRINGLITERAL, {token}>")
-        return 1
-    
+        return Token("STRINGLITERAL", token, line_num)
+
     # Token processing
     if is_keyword(token):
-        print(f"<KEYWORD, {token.lower()}>")  # Ensure keyword is case-insensitive
-        return 1
+        return Token("KEYWORD", token.lower(), line_num)  # Ensure keyword is case-insensitive
     elif is_identifier(token):
-        print(f"<IDENTIFIER, {token}>")
-        return 1
+        return Token("IDENTIFIER", token, line_num)
     elif is_operator(token):
-        print(f"<OPERATOR, {token}>")
-        return 1
+        return Token("OPERATOR", token, line_num)
     elif is_literal(token):
-        print(f"<LITERAL, {token}>")
-        return 1
+        return Token("LITERAL", token, line_num)
     elif is_symbol(token):
-        print(f"<SYMBOL, {token}>")
-        return 1
+        return Token("SYMBOL", token, line_num)
     else:
-        print(f"Error: Unrecognized token '{token}'")
+        print(f"Error: Unrecognized token '{token}' on line {line_num}")
         return -1
