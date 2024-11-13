@@ -10,6 +10,7 @@ NeuraScript is a language designed to simplify the integration of machine learni
 
 ## Deliverables for Homework 2:
 
+### Demo Video Link: https://youtu.be/f6I6PhQrUgg 
 
 ### Part 1: NeuraScript Grammar - Context-Free Grammar (CFG)
 
@@ -356,9 +357,7 @@ This test showcases:
 
 ---
 
-### Error Handling Test
-
-To validate the parser’s error handling, consider the following scenario where an invalid operator is used:
+##### Error Handling
 
 **Sample Input**:
 ```plaintext
@@ -367,7 +366,7 @@ data input == ["email1.txt", "email2.txt"]
 output prediction
 ```
 
-**Expected Error**:
+**Expected Output**:
 ```plaintext
 Syntax error on line 2: Expected ':=' or ':', got '=='
 ```
@@ -377,7 +376,32 @@ This input uses `==` instead of `:=` or `:` for the `data` declaration, triggeri
 
 ---
 
-These test cases collectively cover a broad range of syntax and structural elements in NeuraScript, ensuring the parser’s functionality and robustness. Each `.ns` file provides a clear, specific case for testing the parser’s handling of declarations, assignments, function calls, control structures, and error handling.
+
+### Step 4 Executing 
+### Running the Scanner and now Parser:
+
+#### Using Docker
+1. Install Docker
+2. Build the Docker image by running: 
+   docker build -t neuroscript-toolchain .
+3. Run the code:
+   docker run neuroscript-toolchain  
+
+#### Using Python
+1. Make sure you have Python installed.
+2. Run the scanner with the shell script:
+   ./run_scanner.sh
+
+#### To run the scanner directly if you have python installed: 
+python3 src/scanner.py test/test1.ns
+
+#### To run the parser directly if you have python installed: 
+python3 src/parser.py test/test1.ns
+
+
+
+
+
 Deliverables for Homework 1
 
 1. Lexical Grammar
