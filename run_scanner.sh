@@ -119,5 +119,5 @@ else
     check_python
     setup_virtualenv
     install_dependencies
-    run_scanner_and_parser
+    run_scanner
 fi
