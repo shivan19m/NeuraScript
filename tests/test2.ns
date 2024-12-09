@@ -1,1 +1,13 @@
-// Loading a LInear Regression model and its data 
+// Load model and classify input
+load model := "Linear Regression Model"
+
+data d1 := "data.csv"
+labels l1 := "labels.csv"
+save(model)
+//this creates four variables train_x, train_y, test_x, test_y for training and testing the model 
+split := "0.4"
+
+print(x_train)
+print(x_test)
+print(y_train)
+print(y_test)

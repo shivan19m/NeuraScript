@@ -21,10 +21,12 @@ class StatementListNode(Node):
         self.statements = statements
 
 class DeclarationNode(Node):
-    def __init__(self, var_name, assign_op, expr):
+    def __init__(self, keyword, var_name, assign_op, expr):
+        self.keyword = keyword
         self.var_name = var_name
         self.assign_op = assign_op
         self.expr = expr
+
 
 class AssignmentNode(Node):
     def __init__(self, var_name, expr):

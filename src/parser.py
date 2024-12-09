@@ -68,32 +68,46 @@ class Parser:
             self.error(f"Unexpected token {self.current_token.value}")
 
     def parse_declaration(self):
-        if self.current_token.value == "load":
+        initial_keyword = self.current_token.value  # Store the keyword right now
+        if initial_keyword == "load":
+            # For load model
             self.match("KEYWORD", "load")
             self.match("IDENTIFIER", "model")
+            kw = "load model"  # Hardcode since we know it's always "load model"
             assign_op = self.parse_assign_op()
             expr = self.parse_expression()
-            return DeclarationNode("model", assign_op, expr)
-        elif self.current_token.value == "data":
+            return DeclarationNode(keyword=kw, var_name="model", assign_op=assign_op, expr=expr)
+
+        elif initial_keyword == "data":
+            # For data declarations
             self.match("KEYWORD", "data")
+            kw = "data"
             identifier = self.match("IDENTIFIER")
             assign_op = self.parse_assign_op()
             expr = self.parse_expression()
-            return DeclarationNode(identifier.value, assign_op, expr)
-        elif self.current_token.value == "labels":
+            return DeclarationNode(keyword=kw, var_name=identifier.value, assign_op=assign_op, expr=expr)
+
+        elif initial_keyword == "labels":
+            # For labels declarations
             self.match("KEYWORD", "labels")
+            kw = "labels"
             identifier = self.match("IDENTIFIER")
             assign_op = self.parse_assign_op()
             expr = self.parse_expression()
-            return DeclarationNode(identifier.value, assign_op, expr)
-        elif self.current_token.value == "file":
+            return DeclarationNode(keyword=kw, var_name=identifier.value, assign_op=assign_op, expr=expr)
+
+        elif initial_keyword == "file":
+            # For file declarations
             self.match("KEYWORD", "file")
+            kw = "file"
             identifier = self.match("IDENTIFIER")
             assign_op = self.parse_assign_op()
             expr = self.parse_expression()
-            return DeclarationNode(identifier.value, assign_op, expr)
+            return DeclarationNode(keyword=kw, var_name=identifier.value, assign_op=assign_op, expr=expr)
+
         else:
-            self.error(f"Unexpected keyword {self.current_token.value} in declaration")
+            self.error(f"Unexpected keyword {initial_keyword} in declaration")
+
 
     def parse_assign_op(self):
         if self.current_token.type == "OPERATOR" and self.current_token.value == ":=":
