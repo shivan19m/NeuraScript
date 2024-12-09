@@ -5,13 +5,13 @@
 **Gurnoor Virdi: gsv2110**
 
 ## Introduction
-NeuraScript is a language designed to simplify the integration of machine learning models into applications. The purpose of this project is to create a scanner, parser, and Code Generator for NeuraScript that tokenizes source code, adhering to the finite state automata rules discussed in class. The language is built on Python to implement simple linear regression models for beginners. 
+NeuraScript is a language designed to simplify the integration of Linear Regression models into applications. The purpose of this project is to create a scanner, parser, and Code Generator for NeuraScript that tokenizes source code, adhering to the finite state automata rules discussed in class. The language is built on Python to implement simple linear regression models for beginners. 
 
 Currently "Linear Regression Model" has been implemented for use. We hope to add additional model functionality such as "Random Forest Model" in additional iterations of this project.
 
 ## Final Assignment Deliverables
 
-- codegen.py
+- code_generator.py
 - New Tests test1.ns - test5.ns
 - Demo Video Link: 
 
