@@ -9,17 +9,21 @@ NeuraScript is a language designed to simplify the integration of Linear Regress
 
 Currently "Linear Regression Model" has been implemented for use. We hope to add additional model functionality such as "Random Forest Model" in additional iterations of this project.
 
+## Challenges:
+
+Gurnoor and I had a great time delivering this project and expressing our creativity throughout. We faced many roadblocks along the way but TAs and reviewing class materials and just general research online provided us with a lot of clarity. Some examples included incorporating the python dependencies into our own language. We wanted to be able to use structures like matplotlib to deliver graphs in an easy way and were able to figure out how to ensure that dependencies could be resolved to deliver high quality statistics on regression data. We deviated a bit from our original proposal of being able to deliver all Python functionality because we recognized it would be a largely manual effort to get full functionality. What we have now, we believe to be a good representation of the capabilities of this language and how, given more time, Neurascript could eventually be a fully fleshed out tool for any beginner developer.
+
 ## Final Assignment Deliverables
 
-- code_generator.py
-- New Tests test1.ns - test5.ns
+- code_generator.py - Generating executable from our generated AST
+- New Tests test1.ns - test6.ns, 4 tests showing functionality and 2 general errror tests
 - Demo Video Link: 
 
 ## Assignment Specs
 - Develop Algorithm to process the AST and output lower level language
-   - Given the input AST Tree, our algorithm outputs the corresponding Python executable code. 
+   - Given the input AST Tree, our algorithm outputs the corresponding Python executable code. We do this by processing each node of our developed AST tree and mapping it to the python boilerplate code we truncate. Types of nodes we have include saving a model, classifying a model, inputting data, general operators, etc. 
 - Develop pipeline that further executes the generated code to produce the output
-   - In our shell scripts we pipeline the entire process to produce the full output for each of our script tests. 
+   - In our shell scripts we pipeline the entire process to produce the full output for each of our script tests. The executable for any neurascript (.ns) file type is a Python executable. After all, this is a language built on top of python. Thus, we are able to convert our high level neurascript code into python readable code and execute it through our script pipelines from there. In this phase we also resolve python dependencies for users. 
 
 ## Execution Instructions:
 
@@ -46,22 +50,119 @@ python3 src/parser.py test/test1.ns
 ## Test Files
 
 ### test1.ns: 
-Our main deliverable for this project. End to end training for a machine learning model in 7 simple lines of code. Given an input of csv files, the code will scan, parse, and generate an output python file that can be executed with dependencies included. 
 
-Expected output is a python 
+**Expected AST Outpu for test1.ns t**:
+Loading a linear regression model and its data. 
+```plaintext
+Program
+  Declaration: model :=
+    Literal: "Linear Regression Model"
+  Declaration: d1 :=
+    Literal: "data.csv"
+  Declaration: l1 :=
+    Literal: "labels.csv"
+  FunctionCall: print
+    Identifier: d1
+  FunctionCall: print
+    Identifier: l1
+```
+**Explanation**:  
+This test demonstrates:
+- Model loading and data declaration
+- Use of 'print' Statement
+
 ### test2.ns:
-We now move to showing our intricacies. This is a simple script used to load a model
+We now move to showing our intricacies. This is a script used to load a model, split it, and then print the output. 
+
+**Expected AST Outpu for test2.ns t**:
+Loading a linear regression model and its data. 
+```plaintext
+Program
+  Declaration: model :=
+    Literal: "Linear Regression Model"
+  Declaration: d1 :=
+    Literal: "data.csv"
+  Declaration: l1 :=
+    Literal: "labels.csv"
+  FunctionCall: save
+    Identifier: model
+  Assignment: split :=
+    Literal: "0.4"
+  FunctionCall: print
+    Identifier: x_train
+  FunctionCall: print
+    Identifier: x_test
+  FunctionCall: print
+    Identifier: y_train
+  FunctionCall: print
+    Identifier: y_test
+```
+**Explanation**:  
+This test demonstrates:
+- Model loading, splitting, and then outputting split dataset
+- Use of 'print' Statement
 
 ### test3.ns:
-This script shows the use of a loop and then loading a model
+Our main deliverable for this project. End to end training for a machine learning model in 7 simple lines of code. Given an input of csv files, the code will scan, parse, and generate an output python file that can be executed with dependencies included. 
+
+**Expected AST Outpu for test3.ns t**:
+Loading a linear regression model and its data. 
+```plaintext
+Program
+  Declaration: model :=
+    Literal: "Linear Regression Model"
+  Declaration: d1 :=
+    Literal: "data.csv"
+  Declaration: l1 :=
+    Literal: "labels.csv"
+  FunctionCall: save
+    Identifier: model
+  Assignment: split :=
+    Literal: "0.4"
+  FunctionCall: train
+    Identifier: model
+  FunctionCall: predict
+    Identifier: model
+  FunctionCall: plot
+    Identifier: predictions
+```
+**Explanation**:  
+This test demonstrates:
+- Model loading, splitting, training, saving, and then evaluating model on test data. 
+- Matplotlib integration in Python side, with full graphical GUI appearing. 
 
 ### test4.ns:
-This script depicts our error handling capabilities. If you load an incorrect model type, it will return in error. 
+This script depicts our error handling capabilities. If you load an incorrect model type, it will return in error. It correctly generates a parse tree but in code generation will throw an error. 
 
 ### test5.ns: 
-This script depicts a syntax error.
+This script depicts a syntax error. Outputs in failure pre- code generation phase.
 
-# Old Deliverables: 
+### test6.ns: 
+Given a saved model, deliver predictions on new test data. 
+
+**Expected AST Outpu for test6.ns t**:
+```plaintext
+Program
+  Assignment: model :=
+    FunctionCall: load
+      Literal: "model.pkl"
+  Declaration: d1 :=
+    Literal: "data.csv"
+  Declaration: l1 :=
+    Literal: "labels.csv"
+  Assignment: split :=
+    Literal: "0.5"
+  FunctionCall: predict
+    Identifier: model
+  FunctionCall: plot
+    Identifier: predictions
+```
+
+**Explanation**:  
+This test demonstrates:
+- Loading a saved model and delivering predictions 
+
+# Old Deliverables (For Reference): 
 
 ## Deliverables for Homework 2:
 
