@@ -8,6 +8,7 @@ COPY ./src /app/src
 COPY ./tests /app/tests
 COPY ./run_scanner.sh /app
 COPY ./parser.py /app/src
+COPY ./code_generator.py /app/src 
 COPY requirements.txt /app
 
 # Install dependencies

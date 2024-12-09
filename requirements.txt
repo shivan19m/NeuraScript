@@ -1,2 +1,6 @@
 # requirements.txt
-matplotlib==3.4.2
+numpy
+pandas
+matplotlib
+scikit-learn
+

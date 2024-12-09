@@ -13,7 +13,7 @@ def generate_code(ast):
     python_code = [
         "# Install necessary dependencies",
         "import os",
-        "os.system('pip install numpy pandas matplotlib scikit-learn seaborn')",
+        "os.system('pip install numpy pandas matplotlib scikit-learn')",
         ""
     ]
     # Initial imports 
@@ -62,11 +62,11 @@ def generate_code(ast):
             elif kw == "data":
                 # Data variable declaration
                 data_var_name = node.var_name
-                python_code.append(f"{indent}{data_var_name} = pd.read_csv(\"{node.expr.value.strip('\"')}\")")
+                python_code.append(f"{indent}{data_var_name} = pd.read_csv(\"{node.expr.value.strip('"')}\")")
             elif kw == "labels":
                 # Labels variable declaration
                 labels_var_name = node.var_name
-                python_code.append(f"{indent}{labels_var_name} = pd.read_csv(\"{node.expr.value.strip('\"')}\")[\"Yearly Amount Spent\"]")
+                python_code.append(f"{indent}{labels_var_name} = pd.read_csv(\"{node.expr.value.strip('"')}\")")
             else:
                 # Generic declaration
                 # Check if expr is a load function call
@@ -93,7 +93,7 @@ def generate_code(ast):
                 if data_var_name is None or labels_var_name is None:
                     raise ValueError("Data or labels variable not defined before split.")
                 # Use the tracked data and labels variables
-                python_code.append(f"{indent}X_train, X_test, y_train, y_test = train_test_split({data_var_name}, {labels_var_name}, test_size={split_value}, random_state=101)")
+                python_code.append(f"{indent}x_train, x_test, y_train, y_test = train_test_split({data_var_name}, {labels_var_name}, test_size={split_value}, random_state=101)")
             else:
                 expr_value = node.expr.value if isinstance(node.expr, LiteralNode) else repr(node.expr)
                 python_code.append(f"{indent}{node.var_name} = {expr_value}")
@@ -101,9 +101,9 @@ def generate_code(ast):
         elif isinstance(node, FunctionCallNode):
             # Handle known functions
             if node.func_name == "train":
-                python_code.append(f"{indent}model.fit(X_train, y_train)")
+                python_code.append(f"{indent}model.fit(x_train, y_train)")
             elif node.func_name == "predict":
-                python_code.append(f"{indent}predictions = model.predict(X_test)")
+                python_code.append(f"{indent}predictions = model.predict(x_test)")
             elif node.func_name == "plot":
                 python_code.append(f"{indent}plt.scatter(y_test, predictions)")
                 python_code.append(f"{indent}plt.xlabel(\"Actual Values\")")

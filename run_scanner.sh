@@ -71,7 +71,7 @@ run_scanner() {
             exit 1
         fi
 
-        echo -e "\n\n\nProcessing $test_file..."
+        echo -e "\n\n\nProcessing $test_file with Scanner..."
         output=$(python3 src/scanner.py "$test_file")
         echo "$output"
         echo
@@ -103,6 +103,47 @@ run_parser() {
     done
 }
 
+run_code_generator() {
+    echo "Running the code generator on all test files..."
+    if [ -d "tests" ]; then
+        for test_file in tests/*.ns; do
+            if [ ! -f "$test_file" ]; then
+                echo "No .ns files found in the tests directory."
+                exit 1
+            fi
+            echo -e "\n\n\nGenerating code for $test_file..."
+            generated_output=$(python3 src/code_generator.py "$test_file")
+            echo "$generated_output"
+            echo
+            echo
+        done
+    else
+        echo "Tests directory not found!"
+        exit 1
+    fi
+}
+
+run_generated_code() {
+    echo "Running the generated Python code..."
+    # The generated code should be in outputPythonFiles directory
+    if [ -d "outputPythonFiles" ]; then
+        cd outputPythonFiles || exit 1
+        for py_file in *.py; do
+            if [ ! -f "$py_file" ]; then
+                echo "No .py files found in outputPythonFiles."
+                exit 1
+            fi
+            echo -e "\n\n\nRunning generated code: $py_file"
+            python3 "$py_file"
+            echo
+        done
+    else
+        echo "outputPythonFiles directory not found!"
+        exit 1
+    fi
+}
+
+
 if [ "$1" == "--docker" ]; then
     echo "Using Docker to run the scanner..."
     check_docker
@@ -114,4 +155,6 @@ else
     install_dependencies
     run_scanner
     run_parser
+    run_code_generator
+    run_generated_code
 fi
