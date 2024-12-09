@@ -5,8 +5,63 @@
 **Gurnoor Virdi: gsv2110**
 
 ## Introduction
-NeuraScript is a language designed to simplify the integration of machine learning models into applications. The purpose of this project is to create a scanner (lexical analyzer) for NeuraScript that tokenizes source code, adhering to the finite state automata rules discussed in class, while supporting NeuraScript's constructs and Python's syntax. NeuraScript acts as a wrapper over Python, so the scanner is built to process both NeuraScript and standard Python code.
+NeuraScript is a language designed to simplify the integration of machine learning models into applications. The purpose of this project is to create a scanner, parser, and Code Generator for NeuraScript that tokenizes source code, adhering to the finite state automata rules discussed in class. The language is built on Python to implement simple linear regression models for beginners. 
 
+Currently "Linear Regression Model" has been implemented for use. We hope to add additional model functionality such as "Random Forest Model" in additional iterations of this project.
+
+## Final Assignment Deliverables
+
+- codegen.py
+- New Tests test1.ns - test5.ns
+- Demo Video Link: 
+
+## Assignment Specs
+- Develop Algorithm to process the AST and output lower level language
+   - Given the input AST Tree, our algorithm outputs the corresponding Python executable code. 
+- Develop pipeline that further executes the generated code to produce the output
+   - In our shell scripts we pipeline the entire process to produce the full output for each of our script tests. 
+
+## Execution Instructions:
+
+### Running the Scanner and now Parser:
+
+#### Using Docker
+1. Install Docker
+2. Build the Docker image by running: 
+   docker build -t neuroscript-toolchain .
+3. Run the code:
+   docker run neuroscript-toolchain  
+
+#### Using Python
+1. Make sure you have Python installed.
+2. Run the scanner with the shell script:
+   ./run_scanner.sh
+
+#### To run the scanner directly if you have python installed: 
+python3 src/scanner.py test/test1.ns
+
+#### To run the parser directly if you have python installed: 
+python3 src/parser.py test/test1.ns
+
+## Test Files
+
+### test1.ns: 
+Our main deliverable for this project. End to end training for a machine learning model in 7 simple lines of code. Given an input of csv files, the code will scan, parse, and generate an output python file that can be executed with dependencies included. 
+
+Expected output is a python 
+### test2.ns:
+We now move to showing our intricacies. This is a simple script used to load a model
+
+### test3.ns:
+This script shows the use of a loop and then loading a model
+
+### test4.ns:
+This script depicts our error handling capabilities. If you load an incorrect model type, it will return in error. 
+
+### test5.ns: 
+This script depicts a syntax error.
+
+# Old Deliverables: 
 
 ## Deliverables for Homework 2:
 
@@ -397,10 +452,6 @@ python3 src/scanner.py test/test1.ns
 
 #### To run the parser directly if you have python installed: 
 python3 src/parser.py test/test1.ns
-
-
-
-
 
 Deliverables for Homework 1
 
