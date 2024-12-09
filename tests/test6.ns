@@ -1,12 +1,12 @@
-// Load model and classify input
-load model := "Linear Regression Model"
+// Load model from previously saved model 
+model := load("model.pkl")
 
+//used same example data 
 data d1 := "data.csv"
 labels l1 := "labels.csv"
-//this creates four variables train_x, train_y, test_x, test_y for training and testing the model 
-split := "0.4"
 
-print(x_train)
-print(x_test)
-print(y_train)
-print(y_test)
+//this creates four variables train_x, train_y, test_x, test_y for training and testing the model 
+split := "0.5"
+
+predict(model)
+plot(predictions)

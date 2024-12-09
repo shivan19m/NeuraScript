@@ -25,6 +25,7 @@ def generate_code(ast):
         "import pandas as pd",
         "from sklearn.preprocessing import StandardScaler",
         "from sklearn.linear_model import LinearRegression",
+        "import pickle",  # Added pickle for saving/loading models
     ])
 
     # Model mapping for specific declarations
@@ -50,6 +51,7 @@ def generate_code(ast):
 
         elif isinstance(node, DeclarationNode):
             kw = getattr(node, 'keyword', None)
+            # Handle load model declaration
             if kw == "load model":
                 model_type = node.expr.value.strip('"')
                 if model_type in model_map:
@@ -58,47 +60,68 @@ def generate_code(ast):
                 else:
                     raise ValueError(f"Unsupported model type: {model_type}")
             elif kw == "data":
+                # Data variable declaration
                 data_var_name = node.var_name
                 python_code.append(f"{indent}{data_var_name} = pd.read_csv(\"{node.expr.value.strip('\"')}\")")
             elif kw == "labels":
+                # Labels variable declaration
                 labels_var_name = node.var_name
                 python_code.append(f"{indent}{labels_var_name} = pd.read_csv(\"{node.expr.value.strip('\"')}\")[\"Yearly Amount Spent\"]")
             else:
                 # Generic declaration
-                expr_value = node.expr.value if isinstance(node.expr, LiteralNode) else repr(node.expr)
-                python_code.append(f"{indent}{node.var_name} = {expr_value}")
+                # Check if expr is a load function call
+                if isinstance(node.expr, FunctionCallNode) and node.expr.func_name == "load":
+                    if node.expr.args and isinstance(node.expr.args[0], LiteralNode):
+                        filename = node.expr.args[0].value.strip('"')
+                        python_code.append(f"{indent}{node.var_name} = pickle.load(open('{filename}', 'rb'))")
+                    else:
+                        raise ValueError("load function call must have a filename literal")
+                else:
+                    expr_value = node.expr.value if isinstance(node.expr, LiteralNode) else repr(node.expr)
+                    python_code.append(f"{indent}{node.var_name} = {expr_value}")
 
         elif isinstance(node, AssignmentNode):
-            if node.var_name == "split":
+            # Check if this is loading a model via load(...)
+            if isinstance(node.expr, FunctionCallNode) and node.expr.func_name == "load":
+                if node.expr.args and isinstance(node.expr.args[0], LiteralNode):
+                    filename = node.expr.args[0].value.strip('"')
+                    python_code.append(f"{indent}{node.var_name} = pickle.load(open('{filename}', 'rb'))")
+                else:
+                    raise ValueError("load function requires a filename literal")
+            elif node.var_name == "split":
                 split_value = node.expr.value.strip('"')
                 if data_var_name is None or labels_var_name is None:
                     raise ValueError("Data or labels variable not defined before split.")
                 # Use the tracked data and labels variables
-                python_code.append(f"{indent}x_train, x_test, y_train, y_test = train_test_split({data_var_name}, {labels_var_name}, test_size={split_value}, random_state=101)")
+                python_code.append(f"{indent}X_train, X_test, y_train, y_test = train_test_split({data_var_name}, {labels_var_name}, test_size={split_value}, random_state=101)")
             else:
                 expr_value = node.expr.value if isinstance(node.expr, LiteralNode) else repr(node.expr)
                 python_code.append(f"{indent}{node.var_name} = {expr_value}")
 
         elif isinstance(node, FunctionCallNode):
-            if node.func_name == "print":
-                # Gather the arguments for print
-                # Assuming args is a list of expressions, we convert them to strings
-                args_str = ", ".join(
-                    arg.name if isinstance(arg, IdentifierNode) else repr(arg.value) 
-                    for arg in node.args
-                )
-                python_code.append(f"{indent}print({args_str})")
-            elif node.func_name == "train":
-                python_code.append(f"{indent}model.fit(x_train, y_train)")
+            # Handle known functions
+            if node.func_name == "train":
+                python_code.append(f"{indent}model.fit(X_train, y_train)")
             elif node.func_name == "predict":
-                python_code.append(f"{indent}predictions = model.predict(x_test)")
+                python_code.append(f"{indent}predictions = model.predict(X_test)")
             elif node.func_name == "plot":
                 python_code.append(f"{indent}plt.scatter(y_test, predictions)")
                 python_code.append(f"{indent}plt.xlabel(\"Actual Values\")")
                 python_code.append(f"{indent}plt.ylabel(\"Predictions\")")
                 python_code.append(f"{indent}plt.show()")
+            elif node.func_name == "save":
+                # Save the model using pickle
+                python_code.append(f"{indent}with open('model.pkl', 'wb') as f:")
+                python_code.append(f"{indent}    pickle.dump(model, f)")
+            elif node.func_name == "print":
+                # Print the arguments of the print function call
+                args_str = ", ".join(
+                    arg.name if isinstance(arg, IdentifierNode) else repr(arg.value) 
+                    for arg in node.args
+                )
+                python_code.append(f"{indent}print({args_str})")
             else:
-                # Handle other function calls as needed
+                # Other function calls can be handled here if needed
                 pass
 
         elif isinstance(node, UsingNode):
@@ -139,34 +162,40 @@ def generate_code(ast):
 
     process_node(ast)
 
-    # Prepend imports at the top and exit at bottom 
+    # Prepend imports at the top
     python_code = sorted(list(imports)) + [""] + python_code
 
     return "\n".join(python_code)
 
+
 if __name__ == "__main__":
     import os
+    import sys
     from parser import Parser
     from scanner import scan_file
 
-    # Input file for testing
-    input_file = "tests/test1.ns"
+    if len(sys.argv) < 2:
+        print("Usage: python code_generator.py <source_file1> <source_file2> ...")
+        sys.exit(1)
 
-    tokens = scan_file(input_file)
-    if tokens:
-        parser = Parser(tokens)
-        ast = parser.parse()
-        generated_code = generate_code(ast)
-        print("Generated Python Code:")
-        print(generated_code)
+    output_directory = "outputPythonFiles"
+    os.makedirs(output_directory, exist_ok=True)
 
-        # Export the generated code to a directory
-        output_directory = "outputPythonFiles"
-        os.makedirs(output_directory, exist_ok=True)
-        output_file_path = os.path.join(output_directory, "test1.py")
+    for input_file in sys.argv[1:]:
+        tokens = scan_file(input_file)
+        if tokens:
+            parser = Parser(tokens)
+            ast = parser.parse()
+            generated_code = generate_code(ast)
+            print(f"Generated Python Code for {input_file}:")
+            print(generated_code)
 
-        with open(output_file_path, "w") as output_file:
-            output_file.write(generated_code)
+            base_name = os.path.splitext(os.path.basename(input_file))[0]
+            output_file_path = os.path.join(output_directory, f"{base_name}.py")
 
-        print(f"Python code exported to {output_file_path}")
+            with open(output_file_path, "w") as output_file:
+                output_file.write(generated_code)
 
+            print(f"Python code exported to {output_file_path}")
+        else:
+            print(f"No tokens found for {input_file}, skipping.")

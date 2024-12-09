@@ -3,12 +3,17 @@ load model := "Linear Regression Model"
 
 data d1 := "data.csv"
 labels l1 := "labels.csv"
-save(model)
+
 //this creates four variables train_x, train_y, test_x, test_y for training and testing the model 
 split := "0.4"
 
+// train the model given you have data above  that you initialized 
 train(model)
 
+//make predictions 
 predict(model)
+
+// save the model for future use
+save(model)
 
 plot(predictions)
