@@ -10,10 +10,12 @@ class Token:
         return f"<{self.type}, {self.value}>"
 
 keywords = [
-    "load", "classify", "train", "foreach", "save", "file", "process_email",
-    "predict", "read_file", "split", "in", "output", "data", "using", "by"
+    "load", "classify", "train", "foreach", "save", "file",
+    "predict", "read_file", "split", "in", "output", "data", "using", "by", "plot", "labels"
 ]
 
 operators = [":=", "+", "-", "*", "/", "==", "!=", "<", ">", "<=", ">=", "="]
 
 symbols = ["{", "}", "(", ")", "[", "]", ",", ":", "."]
+
+

@@ -56,7 +56,7 @@ class Parser:
 
     def parse_statement(self):
         if self.current_token.type in ("KEYWORD", "IDENTIFIER"):
-            if self.current_token.value in ["load", "data", "file"]:
+            if self.current_token.value in ["load", "data", "file", "labels"]:
                 return self.parse_declaration()
             elif self.current_token.value == "foreach":
                 return self.parse_loop()
@@ -76,6 +76,12 @@ class Parser:
             return DeclarationNode("model", assign_op, expr)
         elif self.current_token.value == "data":
             self.match("KEYWORD", "data")
+            identifier = self.match("IDENTIFIER")
+            assign_op = self.parse_assign_op()
+            expr = self.parse_expression()
+            return DeclarationNode(identifier.value, assign_op, expr)
+        elif self.current_token.value == "labels":
+            self.match("KEYWORD", "labels")
             identifier = self.match("IDENTIFIER")
             assign_op = self.parse_assign_op()
             expr = self.parse_expression()

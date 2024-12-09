@@ -1,5 +1,15 @@
-// Nested loops and function calls
-data numbers := [1, 2, 3, 4, 5]
-foreach num in numbers:
-    squared := power(num, 2)
-    output squared
+// error 1 loading incorrect model type 
+// Load model and classify input
+load model := " Random Forest Model"
+
+data x := "data.csv"
+labels y := "labels.csv"
+
+//this creates four variables train_x, train_y, test_x, test_y for training and testing the model 
+split := "0.3"
+
+model := train(model) using train_x
+
+predictions := predict(model) using test_x
+
+plot(predictions)

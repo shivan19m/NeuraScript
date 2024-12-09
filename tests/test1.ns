@@ -1,6 +1,14 @@
 // Load model and classify input
-load model := "classificationModel"
-data input := ["email1.txt", "email2.txt"]
-foreach item in input:
-    prediction := classify(item) using model
-    output prediction
+load model := "Linear Regression Model"
+
+data x := "data.csv"
+labels y := "labels.csv"
+
+//this creates four variables train_x, train_y, test_x, test_y for training and testing the model 
+split := "0.3"
+
+model := train(model) using train_x
+
+predictions := predict(model) using test_x
+
+plot(predictions)

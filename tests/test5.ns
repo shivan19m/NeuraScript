@@ -1,6 +1,16 @@
-// Multiple arguments and variables
-load model := "regressionModel"
-data x_values := [1, 2, 3, 4]
-data y_values := [2, 4, 6, 8]
-results := train(model, x_values, y_values)
-output results
+// error 2 syntax error 
+
+// Load model and classify input
+load model := "Linear Regression Model"
+
+data x := "data.csv"
+labels y := "labels.csv"
+
+//this creates four variables train_x, train_y, test_x, test_y for training and testing the model 
+split := "0.3"
+
+model := train(model) using train_x
+
+predictions := predict(model using test_x
+
+plot(predictions)

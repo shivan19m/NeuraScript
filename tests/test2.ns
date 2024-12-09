@@ -1,3 +1,1 @@
-// Train a new model
-load model := "newModel"
-train(model) using dataset
+// Loading a LInear Regression model and its data 
