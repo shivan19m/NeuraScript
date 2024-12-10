@@ -41,17 +41,20 @@ Gurnoor and I had a great time delivering this project and expressing our creati
 2. Run the scanner with the shell script:
    ./run_scanner.sh
 
+### To run the code generator directly if you have python installed:
+python3 src/code_generator.py tests/test1.ns
+
 #### To run the scanner directly if you have python installed: 
-python3 src/scanner.py test/test1.ns
+python3 src/scanner.py tests/test1.ns
 
 #### To run the parser directly if you have python installed: 
-python3 src/parser.py test/test1.ns
+python3 src/parser.py tests/test1.ns
 
 ## Test Files
 
 ### test1.ns: 
 
-**Expected AST Outpu for test1.ns t**:
+**Expected AST Output for test1.ns t**:
 Loading a linear regression model and its data. 
 ```plaintext
 Program
