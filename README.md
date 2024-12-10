@@ -16,7 +16,7 @@ Gurnoor and I had a great time delivering this project and expressing our creati
 ## Final Assignment Deliverables
 
 - code_generator.py - Generating executable from our generated AST
-- New Tests test1.ns - test6.ns, 4 tests showing functionality and 2 general errror tests
+- New Tests test1.ns - test6.ns, 4 tests showing functionality and 2 general error tests
 - Demo Video Link: https://youtu.be/xI_YuKkdv7U 
 
 ## Assignment Specs
