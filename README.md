@@ -17,7 +17,7 @@ Gurnoor and I had a great time delivering this project and expressing our creati
 
 - code_generator.py - Generating executable from our generated AST
 - New Tests test1.ns - test6.ns, 4 tests showing functionality and 2 general errror tests
-- Demo Video Link: 
+- Demo Video Link: https://youtu.be/xI_YuKkdv7U 
 
 ## Assignment Specs
 - Develop Algorithm to process the AST and output lower level language
