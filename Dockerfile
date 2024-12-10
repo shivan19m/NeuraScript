@@ -19,3 +19,4 @@ RUN chmod +x /app/run_scanner.sh
 
 # Set the entry point for the container
 CMD ["./run_scanner.sh"]
+
