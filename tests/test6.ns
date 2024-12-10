@@ -5,7 +5,6 @@ model := load("model.pkl")
 data d1 := "data.csv"
 labels l1 := "labels.csv"
 
-//this creates four variables train_x, train_y, test_x, test_y for training and testing the model 
 split := "0.5"
 
 predict(model)

@@ -27,14 +27,7 @@ Gurnoor and I had a great time delivering this project and expressing our creati
 
 ## Execution Instructions:
 
-### Running the Scanner and now Parser:
-
-#### Using Docker
-1. Install Docker
-2. Build the Docker image by running: 
-   docker build -t neuroscript-toolchain .
-3. Run the code:
-   docker run neuroscript-toolchain  
+### Running the Code Generation:
 
 #### Using Python
 1. Make sure you have Python installed.
@@ -364,40 +357,3 @@ A run_scanner.sh shell script is provided to automate the execution of the scann
 
 5.  README
 This README provides details on our code. It explains the lexical grammar, FSM implementation, error handling, and examples. It also includes LaTeX diagrams of the automaton.
-
-
-
-## UPDATED For Programming HW 2: 
-## Running the Scanner and now Parser:
-
-### Using Docker
-1. Install Docker
-2. Build the Docker image by running: 
-   docker build -t neuroscript-toolchain .
-3. Run the code:
-   docker run neuroscript-toolchain  
-
-### Using Python
-1. Make sure you have Python installed.
-2. Run the scanner with the shell script:
-   ./run_scanner.sh
-
-#### To run the scanner directly if you have python installed: 
-python3 src/scanner.py test/test1.ns
-
-#### To run the parser directly if you have python installed: 
-python3 src/parser.py test/test1.ns
-
-
-Docker run commands: 
-docker build -t neuroscript-toolchain .
-
-docker run neuroscript-toolchain
-
-without docker: 
-./run_scanner.sh test1.ns
-
-
-with docker: 
-./run_scanner.sh --docker
-
